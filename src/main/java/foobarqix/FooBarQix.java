@@ -1,67 +1,30 @@
 package foobarqix;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.HashMap;
+import java.util.Map;
+import static java.lang.Character.getNumericValue;
+import static java.util.stream.Collectors.joining;
 
 public class FooBarQix {
+    private static Map<Integer, String> associations = new HashMap<Integer, String>() {{
+        put(3, "Foo"); put(5, "Bar"); put(7, "Qix");
+    }};
 
-    private static final String FOO = "Foo";
-    private static final String BAR = "Bar";
-    private static final String QIX = "Qix";
-    private static final String THREE = "3";
-    private static final String FIVE = "5";
-    private static final String SEVEN = "7";
-
-    public void toFooBarQix(List<Integer> numbers, Consumer<String> printer) {
-        if(numbers.isEmpty()  || numbers.size() > 100) {
-            throw new IllegalArgumentException("invalid input");
-        }
-      
-        numbers.stream()
-                .map(number->toFooBarQix(number))
-                .forEach(printer);
+    public static String transform(int number) {
+        String numberAsString = String.valueOf(number);
+        String result = map(number) + map(numberAsString);
+        return result.isEmpty() ? numberAsString : result;
     }
 
-    public String toFooBarQix(int number) {
-        if(number < 1 || number>100) {
-            throw new IllegalArgumentException("invalid input");
-        }
-        
-        StringBuilder result = new StringBuilder();
-        
-        if(number%3==0) {
-            result.append(FOO);
-        }
-        if(number%5==0) {
-            result.append(BAR);
-        }
-        
-        result.append(toFooBarQix(String.valueOf(number)));
-
-        if(result.length() == 0) {
-            result.append(number);
-        }
-        
-        return result.toString();
+    private static String map(int number) {
+        return associations.keySet().stream().filter(key -> key!=7 && number % key == 0)
+                .map(associations::get)
+                .collect(joining());
     }
 
-    private String toFooBarQix(String number) {
-        StringBuilder result = new StringBuilder();
-        for(int j=0; j<number.length(); j++) {
-            final char character = number.charAt(j);
-            if(THREE.equals(String.valueOf(character))){
-                result.append(FOO);
-            }
-            if(FIVE.equals(String.valueOf(character))){
-                result.append(BAR);
-            }
-            if(SEVEN.equals(String.valueOf(character))){
-                result.append(QIX);
-            }
-        }
-        
-        return result.toString();
+    private static String map(String numberAsString) {
+        return numberAsString.chars()
+                .mapToObj(integerAsChar -> associations.getOrDefault(getNumericValue(integerAsChar), ""))
+                .collect(joining());
     }
-
-
 }

@@ -1,14 +1,10 @@
 package foobarqix;
-
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.IntStream;
 
 public class Program {
 
 	public static void main(String[] args) {
-		List<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-		FooBarQix fooBarQix = new FooBarQix();
-		fooBarQix.toFooBarQix(numbers, System.out::println);
+		IntStream.range(1,100).mapToObj(FooBarQix::transform).forEach(System.out::println);
 	}
 
 }
